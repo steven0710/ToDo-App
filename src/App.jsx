@@ -2,8 +2,6 @@ import './App.css';
 import React, { useState } from 'react';
 import ToDoForm from './components/ToDoForm';
 import ToDoItem from './components/ToDoItem';
-import CompletedForm from './components/CompletedForm';
-import CompletedItem from './components/CompletedItem';
 
 /**
  * This App should:
@@ -21,13 +19,51 @@ import CompletedItem from './components/CompletedItem';
 
 /*
   TODO:
-
-  1.) Consider adding global css file with basic configuration in place
+  1.) ConstaskIder adding global css file with basic configuration in place
     - Check for comfort level changing styles
-  2.) How do we determine the level of candidate?
+  2.) How do we determine the level of candtaskIdate?
     –
 */
 
 export default function App() {
-  return(<div></div>);
+  const [toDos, setToDos] = useState([]);
+  const [taskId, setTaskId] = useState(1);
+
+  const addToDo = (text) => {
+    setTaskId(taskId + 1);
+    const singleToDo = { id: taskId, text: text, completed: false };
+    const newToDos = [...toDos, singleToDo];
+
+    setToDos(newToDos);
+  };
+
+  const onUpdateToDo = (id) => {
+    const updatedTodos = toDos.map((todo) => {
+      if (todo.id === id) {
+        const temp = todo;
+        temp.completed = !temp.completed;
+      }
+      return todo;
+    });
+    setToDos(updatedTodos);
+  };
+
+  const removeToDo = (id) => {
+    const updatedTodos = [...toDos].filter((todo) => todo.id !== id);
+    setToDos(updatedTodos);
+  };
+  return (
+    <div className="todo-app">
+      <h1>Hello ToDo List</h1>
+      <ToDoForm onAddToDo={addToDo} />
+      {toDos.map((singleToDo) => (
+        <ToDoItem
+          onUpdateToDo={onUpdateToDo}
+          removeToDo={removeToDo}
+          singleToDo={singleToDo}
+          key={singleToDo.id}
+        />
+      ))}
+    </div>
+  );
 }
