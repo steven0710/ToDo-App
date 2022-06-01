@@ -2,9 +2,7 @@ import './App.css';
 import React, { useState } from 'react';
 import ToDoForm from './components/ToDoForm';
 import ToDoItem from './components/ToDoItem';
-import CompletedForm from './components/CompletedForm';
-import CompletedItem from './components/CompletedItem';
-//hello
+
 /**
  * This App should:
  *  - Input a task
@@ -21,83 +19,47 @@ import CompletedItem from './components/CompletedItem';
 
 /*
   TODO:
-  1.) Consider adding global css file with basic configuration in place
+  1.) ConstaskIder adding global css file with basic configuration in place
     - Check for comfort level changing styles
-  2.) How do we determine the level of candidate?
+  2.) How do we determine the level of candtaskIdate?
     –
 */
 
 export default function App() {
-  const [toDosState, setToDosState] = useState([]);
-
-  const [completedState, setCompletedState] = useState([]);
-
-  const [idState, setIdState] = useState(1);
-
-  const updateToDo = (id) => {
-    const updatedToDos = [...toDosState].filter((todo) => todo.id !== id);
-    // will create new array where id is not equal to
-    // todo is the n th iteration in the array, will
-    // iterate every every element in the array
-    const updatedComplete = [...toDosState].filter((todo) => todo.id === id);
-
-    const singleComplete = {
-      ...updatedComplete[0],
-      completed: !updatedComplete[0].completed,
-    };
-    console.log(updatedComplete);
-    console.log(updatedToDos);
-    setToDosState(updatedToDos);
-
-    const TotalUpdatedComplete = [...completedState, singleComplete];
-    console.log(TotalUpdatedComplete);
-    setCompletedState(TotalUpdatedComplete);
-  };
-
-  const updateComplete = (id) => {
-    const completedTodos = [...completedState].filter((todo) => todo.id !== id);
-    // will create new array where id is not equal to
-    // todo is the n th iteration in the array, will
-    // iterate every every element in the array
-    const updatedComplete = [...completedState].filter(
-      (todo) => todo.id === id,
-    );
-
-    const singleComplete = {
-      ...updatedComplete[0],
-      completed: !updatedComplete[0].completed,
-    };
-    setCompletedState(completedTodos);
-
-    const todoList = [...toDosState, singleComplete];
-    setToDosState(todoList);
-  };
+  const [toDos, setToDos] = useState([]);
+  const [taskId, setTaskId] = useState(1);
 
   const addToDo = (text) => {
-    setIdState(idState + 1);
+    setTaskId(taskId + 1);
+    const singleToDo = { id: taskId, text: text, completed: false };
+    const newToDos = [...toDos, singleToDo];
 
-    const singleToDo = { id: idState, text: text, completed: false };
-    const newToDos = [...toDosState, singleToDo];
-    // console.log(newToDos)
-    setToDosState(newToDos);
-    // console.log(newToDos)
+    setToDos(newToDos);
+  };
+
+  const onUpdateToDo = (id) => {
+    const updatedTodos = toDos.map((todo) => {
+      if (todo.id === id) {
+        const temp = todo;
+        temp.completed = !temp.completed;
+      }
+      return todo;
+    });
+    setToDos(updatedTodos);
+  };
+
+  const removeToDo = (id) => {
+    const updatedTodos = [...toDos].filter((todo) => todo.id !== id);
+    setToDos(updatedTodos);
   };
   return (
     <div className="todo-app">
       <h1>Hello ToDo List</h1>
-      <ToDoForm addToDo={addToDo} />
-      {toDosState.map((singleToDo) => (
+      <ToDoForm onAddToDo={addToDo} />
+      {toDos.map((singleToDo) => (
         <ToDoItem
-          updateToDo={updateToDo}
-          singleToDo={singleToDo}
-          key={singleToDo.id}
-        />
-      ))}
-      <h1>Completed Tasks</h1>
-      <CompletedForm updateToDo={updateToDo} />
-      {completedState.map((singleToDo) => (
-        <CompletedItem
-          updateToDo={updateComplete}
+          onUpdateToDo={onUpdateToDo}
+          removeToDo={removeToDo}
           singleToDo={singleToDo}
           key={singleToDo.id}
         />

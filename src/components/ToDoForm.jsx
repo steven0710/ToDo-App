@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-export default function ToDoForm({ addToDo }) {
+export default function ToDoForm({ onAddToDo }) {
   const [toDo, setToDo] = useState('');
 
   const setStateOnSubmit = (e) => {
     e.preventDefault();
-    addToDo(toDo);
+    onAddToDo(toDo);
     setToDo('');
   };
   return (
@@ -15,6 +15,8 @@ export default function ToDoForm({ addToDo }) {
         onChange={(e) => setToDo(e.target.value)}
         type="text"
         value={toDo}
+        required
+        min="1"
       />
       <button className="todo-button" type="submit">
         Enter
